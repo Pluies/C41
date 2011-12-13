@@ -1,7 +1,6 @@
-
 /*
- * CINELERRA
- * Copyright (C) 2008 Adam Williams <broadcast at earthling dot net>
+ * C41 plugin for Cinelerra
+ * Copyright (C) 2011 Florent Delannoy <florent at plui dot es>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
