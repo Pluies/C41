@@ -118,7 +118,6 @@ public:
 	void raise_window();
 	int set_string();
 	int load_configuration();
-	int handle_opengl();
 	void lock_parameters();
 	float log2(float i);
 	float myLog2(float i);
@@ -583,7 +582,7 @@ int C41Effect::process_buffer(VFrame *frame,
 			0,
 			start_position,
 			frame_rate,
-			get_use_opengl());
+			0);
 
 	int frame_w = frame->get_w();
 	int frame_h = frame->get_h();
@@ -720,14 +719,5 @@ int C41Effect::process_buffer(VFrame *frame,
 	}
 
 	return 0;
-}
-
-int C41Effect::handle_opengl()
-{
-#ifdef HAVE_GL
-	/* TODO */
-	/* NOT IMPLEMENTED */
-	/* TODO */
-#endif
 }
 
