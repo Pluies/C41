@@ -735,7 +735,7 @@ int C41Effect::process_buffer(VFrame *frame,
 		// printf("Magic values: %f %f %f\n", magic4, magic5, magic
 
 		// Update GUI
-		float *nf_vals = (float*) malloc(6 * <D-@>sizeof(float));
+		float *nf_vals = (float*) malloc(6 * sizeof(float));
 		nf_vals[0] = magic1; nf_vals[1] = magic2; nf_vals[2] = magic3;
 		nf_vals[3] = magic4; nf_vals[4] = magic5; nf_vals[5] = magic6;
 		send_render_gui(nf_vals);
