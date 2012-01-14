@@ -602,7 +602,6 @@ int C41Effect::process_buffer(VFrame *frame,
 		case BC_RGBA16161616:
 		case BC_YUVA16161616:
 			return 0; // Unsupported
-			break;
 		case BC_RGB_FLOAT:
 			break;
 	}
