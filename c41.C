@@ -654,7 +654,6 @@ int C41Effect::process_buffer(VFrame *frame,
 							+tmp_rows[y_up][x_left]
 							+tmp_rows[y_up][x_right]
 							+tmp_rows[y_down][x_right])/4;
-					//if( i%250==1 && j%250==1 ) printf("values, i=%d j=%d tot=%f\n", i, j, tot);//, mul);
 					blurry_rows[y][x]= component;
 				}
 			}
