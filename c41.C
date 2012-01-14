@@ -119,7 +119,6 @@ public:
 	int set_string();
 	int load_configuration();
 	void lock_parameters();
-	float log2(float i);
 	float myLog2(float i);
 	float myPow2(float i);
 	float myPow(float a, float b);
@@ -520,11 +519,6 @@ void C41Effect::read_data(KeyFrame *keyframe)
  * Tests on real-world data showed a max error of 4% and avg. error or .1 to .5%,
  * while accelerating rendering by a factor of 4.
  */
-float C41Effect::log2(float i)
-{
-	return(log(i)/log(2));
-}
-
 float C41Effect::myLog2(float i)
 {
 	float x, y, LogBodge = 0.346607f;
