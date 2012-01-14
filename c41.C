@@ -32,8 +32,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <sys/time.h>
-
 
 /* Class declarations */
 class C41Effect;
@@ -609,10 +607,6 @@ int C41Effect::process_buffer(VFrame *frame,
 
 	float magic1, magic2, magic3, magic4, magic5, magic6;
 
-	// Profiling
-	timespec start,middle,end;
-	clock_gettime(CLOCK_REALTIME, &start);
-
 	if(config.compute_magic)
 	{
 		// Box blur!
@@ -700,8 +694,6 @@ int C41Effect::process_buffer(VFrame *frame,
 		send_render_gui(nf_vals);
 	}
 
-	clock_gettime(CLOCK_REALTIME, &middle);
-
 	// Apply the transformation
 	if(config.active)
 	{
@@ -726,11 +718,6 @@ int C41Effect::process_buffer(VFrame *frame,
 			}
 		}
 	}
-
-	clock_gettime(CLOCK_REALTIME, &end);
-
-	// Profiling
-	// printf("Time elapsed: %f (computing magic values), %f (processing image), %f total\n", difftime_nano(start,middle)/1e9, difftime_nano(middle,end)/1e9, difftime_nano(start,end)/1e9);
 
 	return 0;
 }
