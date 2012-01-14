@@ -409,8 +409,6 @@ void C41Effect::render_gui(void* data)
 			thread->window->fix_magic5->update(config.fix_magic5);
 			thread->window->fix_magic6->update(config.fix_magic6);
 
-			// DEBUG
-			// printf("UPDATING GUI with RENDER and values %f %f %f\n", config.min_r, config.min_g, config.min_b);
 			free(data);
 
 			thread->window->unlock_window();
@@ -688,17 +686,12 @@ int C41Effect::process_buffer(VFrame *frame,
 		delete tmp_frame;
 		delete blurry_frame;
 
-		// DEBUG
-		//printf("Minima: %f %f %f\n", minima_r, minima_g, minima_b);
-		//printf("Maxima: %f %f %f\n", maxima_r, maxima_g, maxima_b);
 		magic1 = minima_r;
 		magic2 = minima_g;
 		magic3 = minima_b;
 		magic4 = (minima_r / maxima_r) * 0.95;
 		magic5 = log(maxima_g / minima_g) / log(maxima_r / minima_r);
 		magic6 = log(maxima_b / minima_b) / log(maxima_r / minima_r);
-		// DEBUG
-		// printf("Magic values: %f %f %f\n", magic4, magic5, magic
 
 		// Update GUI
 		float *nf_vals = (float*) malloc(6 * <D-@>sizeof(float));
@@ -722,13 +715,9 @@ int C41Effect::process_buffer(VFrame *frame,
 
 		for(int i = 0; i < frame_h; i++)
 		{
-			// DEBUG: will show the parts of the image skipped to compute the minima
-			// SKIP_ROW;
 			float *row = (float*)frame->get_rows()[i];
 			for(int j = 0; j < frame_w; j++, row += 3)
 			{
-				// DEBUG
-				// SKIP_COL;
 				row[0] = (magic1 / row[0]) - magic4;
 
 				row[1] = myPow((magic2 / row[1]), 1 / magic5) - magic4;
@@ -742,8 +731,6 @@ int C41Effect::process_buffer(VFrame *frame,
 
 	// Profiling
 	// printf("Time elapsed: %f (computing magic values), %f (processing image), %f total\n", difftime_nano(start,middle)/1e9, difftime_nano(middle,end)/1e9, difftime_nano(start,end)/1e9);
-
-	/* END NEGFIX */
 
 	return 0;
 }
