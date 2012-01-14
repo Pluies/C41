@@ -40,60 +40,60 @@ class C41Effect;
 
 class C41Config
 {
-	public:
-		C41Config();
+public:
+	C41Config();
 
-		void copy_from(C41Config &src);
-		int equivalent(C41Config &src);
-		void interpolate(C41Config &prev,
-				C41Config &next,
-				long prev_frame,
-				long next_frame,
-				long current_frame);
+	void copy_from(C41Config &src);
+	int equivalent(C41Config &src);
+	void interpolate(C41Config &prev,
+			C41Config &next,
+			long prev_frame,
+			long next_frame,
+			long current_frame);
 
-		int active, compute_magic;
-		float min_r, min_g, min_b, magic4, magic5, magic6;
-		float fix_min_r, fix_min_g, fix_min_b, fix_magic4, fix_magic5, fix_magic6;
+	int active, compute_magic;
+	float min_r, min_g, min_b, magic4, magic5, magic6;
+	float fix_min_r, fix_min_g, fix_min_b, fix_magic4, fix_magic5, fix_magic6;
 };
 
 class C41Enable : public BC_CheckBox
 {
-	public:
-		C41Enable(C41Effect *plugin, int *output, int x, int y, char *text);
-		int handle_event();
-		C41Effect *plugin;
-		int *output;
+public:
+	C41Enable(C41Effect *plugin, int *output, int x, int y, char *text);
+	int handle_event();
+	C41Effect *plugin;
+	int *output;
 };
 
 class C41TextBox : public BC_TextBox
 {
-	public:
-		C41TextBox(C41Effect *plugin, float *value, int x, int y);
-		int handle_event();
-		C41Effect *plugin;
-		float *boxValue;
+public:
+	C41TextBox(C41Effect *plugin, float *value, int x, int y);
+	int handle_event();
+	C41Effect *plugin;
+	float *boxValue;
 };
 
 class C41Button : public BC_GenericButton
 {
-	public:
-		C41Button(C41Effect *plugin, int x, int y);
-		int handle_event();
-		C41Effect *plugin;
-		float *boxValue;
+public:
+	C41Button(C41Effect *plugin, int x, int y);
+	int handle_event();
+	C41Effect *plugin;
+	float *boxValue;
 };
 
 class C41Window : public BC_Window
 {
 	public:
-		C41Window(C41Effect *plugin, int x, int y);
-		void create_objects();
-		int close_event();
-		C41Enable *active, *compute_magic;
-		C41TextBox *min_r, *min_g, *min_b, *magic4, *magic5, *magic6;
-		C41TextBox *fix_min_r, *fix_min_g, *fix_min_b, *fix_magic4, *fix_magic5, *fix_magic6;
-		C41Button *lock;
-		C41Effect *plugin;
+	C41Window(C41Effect *plugin, int x, int y);
+	void create_objects();
+	int close_event();
+	C41Enable *active, *compute_magic;
+	C41TextBox *min_r, *min_g, *min_b, *magic4, *magic5, *magic6;
+	C41TextBox *fix_min_r, *fix_min_g, *fix_min_b, *fix_magic4, *fix_magic5, *fix_magic6;
+	C41Button *lock;
+	C41Effect *plugin;
 };
 
 PLUGIN_THREAD_HEADER(C41Effect, C41Thread, C41Window);
@@ -101,36 +101,36 @@ PLUGIN_THREAD_HEADER(C41Effect, C41Thread, C41Window);
 
 class C41Effect : public PluginVClient
 {
-	public:
-		C41Effect(PluginServer *server);
-		~C41Effect();
-		int process_buffer(VFrame *frame,
-				int64_t start_position,
-				double frame_rate);
-		int is_realtime();
-		char* plugin_title();
-		VFrame* new_picon();
-		int load_defaults();
-		int save_defaults();
-		void save_data(KeyFrame *keyframe);
-		void read_data(KeyFrame *keyframe);
-		void update_gui();
-		void render_gui(void* data);
-		int show_gui();
-		void raise_window();
-		int set_string();
-		int load_configuration();
-		int handle_opengl();
-		void lock_parameters();
-		float log2(float i);
-		float myLog2(float i);
-		float myPow2(float i);
-		float myPow(float a, float b);
-		double difftime_nano(timespec start, timespec end);
+public:
+	C41Effect(PluginServer *server);
+	~C41Effect();
+	int process_buffer(VFrame *frame,
+			int64_t start_position,
+			double frame_rate);
+	int is_realtime();
+	char* plugin_title();
+	VFrame* new_picon();
+	int load_defaults();
+	int save_defaults();
+	void save_data(KeyFrame *keyframe);
+	void read_data(KeyFrame *keyframe);
+	void update_gui();
+	void render_gui(void* data);
+	int show_gui();
+	void raise_window();
+	int set_string();
+	int load_configuration();
+	int handle_opengl();
+	void lock_parameters();
+	float log2(float i);
+	float myLog2(float i);
+	float myPow2(float i);
+	float myPow(float a, float b);
+	double difftime_nano(timespec start, timespec end);
 
-		C41Config config;
-		C41Thread *thread;
-		BC_Hash *defaults;
+	C41Config config;
+	C41Thread *thread;
+	BC_Hash *defaults;
 };
 
 REGISTER_PLUGIN(C41Effect);
@@ -147,6 +147,7 @@ C41Config::C41Config()
 	min_r = min_g = min_b = magic4 = magic5 = magic6 = 0.;
 	fix_min_r = fix_min_g = fix_min_b = fix_magic4 = fix_magic5 = fix_magic6 = 0.;
 }
+
 void C41Config::copy_from(C41Config &src)
 {
 	active = src.active;
@@ -166,10 +167,12 @@ void C41Config::copy_from(C41Config &src)
 	fix_magic5 = src.fix_magic5;
 	fix_magic6 = src.fix_magic6;
 }
+
 int C41Config::equivalent(C41Config &src)
 {
 	return false;
 }
+
 void C41Config::interpolate(C41Config &prev,
 		C41Config &next,
 		long prev_frame,
@@ -192,16 +195,16 @@ void C41Config::interpolate(C41Config &prev,
 	fix_magic4 = prev.fix_magic4;
 	fix_magic5 = prev.fix_magic5;
 	fix_magic6 = prev.fix_magic6;
-
 }
 
 // C41Enable
-	C41Enable::C41Enable(C41Effect *plugin, int *output, int x, int y, char *text)
-: BC_CheckBox(x, y, *output, text)
+C41Enable::C41Enable(C41Effect *plugin, int *output, int x, int y, char *text)
+ : BC_CheckBox(x, y, *output, text)
 {
 	this->plugin = plugin;
 	this->output = output;
 }
+
 int C41Enable::handle_event()
 {
 	*output = get_value();
@@ -210,12 +213,13 @@ int C41Enable::handle_event()
 }
 
 // C41TextBox
-	C41TextBox::C41TextBox(C41Effect *plugin, float *value, int x, int y)
-: BC_TextBox(x, y, 160, 1, *value)
+C41TextBox::C41TextBox(C41Effect *plugin, float *value, int x, int y)
+ : BC_TextBox(x, y, 160, 1, *value)
 {
 	this->plugin = plugin;
 	this->boxValue = value;
 }
+
 int C41TextBox::handle_event()
 {
 	*boxValue = atof(get_text());
@@ -226,10 +230,11 @@ int C41TextBox::handle_event()
 
 // C41Button
 C41Button::C41Button(C41Effect *plugin, int x, int y)
-	: BC_GenericButton(x, y, "Lock parameters")
+ : BC_GenericButton(x, y, "Lock parameters")
 {
 	this->plugin = plugin;
 }
+
 int C41Button::handle_event()
 {
 	plugin->lock_parameters();
@@ -238,11 +243,12 @@ int C41Button::handle_event()
 }
 
 // C41Window
-	C41Window::C41Window(C41Effect *plugin, int x, int y)
-: BC_Window(plugin->gui_string, x, y, 250, 620, 250, 620, 1, 0, 1)
+C41Window::C41Window(C41Effect *plugin, int x, int y)
+ : BC_Window(plugin->gui_string, x, y, 250, 620, 250, 620, 1, 0, 1)
 {
 	this->plugin = plugin;
 }
+
 void C41Window::create_objects()
 {
 	int x = 10, y = 10;
@@ -331,22 +337,25 @@ WINDOW_CLOSE_EVENT(C41Window);
 PLUGIN_THREAD_OBJECT(C41Effect, C41Thread, C41Window);
 
 // C41Effect
-	C41Effect::C41Effect(PluginServer *server)
-: PluginVClient(server)
+C41Effect::C41Effect(PluginServer *server)
+ : PluginVClient(server)
 {
 	PLUGIN_CONSTRUCTOR_MACRO
 }
+
 C41Effect::~C41Effect()
 {
 	PLUGIN_DESTRUCTOR_MACRO
 }
+
 char* C41Effect::plugin_title() { return N_("C41"); }
+
 int C41Effect::is_realtime() { return 1; }
 
-	NEW_PICON_MACRO(C41Effect)
-	SHOW_GUI_MACRO(C41Effect, C41Thread)
-	RAISE_WINDOW_MACRO(C41Effect)
-	SET_STRING_MACRO(C41Effect)
+NEW_PICON_MACRO(C41Effect)
+SHOW_GUI_MACRO(C41Effect, C41Thread)
+RAISE_WINDOW_MACRO(C41Effect)
+SET_STRING_MACRO(C41Effect)
 LOAD_CONFIGURATION_MACRO(C41Effect, C41Config)
 
 void C41Effect::lock_parameters()
@@ -359,20 +368,18 @@ void C41Effect::lock_parameters()
 	config.fix_magic6 = config.magic6;
 }
 
-
 void C41Effect::update_gui()
 {
 	// We don't use update_gui, but rather render_gui.
 	// However, the method is still needed to instantiate the plugin
-
 }
-
 
 void C41Effect::render_gui(void* data)
 {
 	if(thread)
 	{
-		if(load_configuration()){
+		if(load_configuration())
+		{
 			thread->window->lock_window();
 
 			// Updating values computed by process_buffer
@@ -409,7 +416,6 @@ void C41Effect::render_gui(void* data)
 			thread->window->unlock_window();
 		}
 	}
-
 }
 
 int C41Effect::load_defaults()
@@ -437,6 +443,7 @@ int C41Effect::load_defaults()
 
 	return 0;
 }
+
 int C41Effect::save_defaults()
 {
 	defaults->update("ACTIVE", config.active);
@@ -457,6 +464,7 @@ int C41Effect::save_defaults()
 	defaults->save();
 	return 0;
 }
+
 void C41Effect::save_data(KeyFrame *keyframe)
 {
 	FileXML output;
@@ -484,6 +492,7 @@ void C41Effect::save_data(KeyFrame *keyframe)
 	output.append_tag();
 	output.terminate_string();
 }
+
 void C41Effect::read_data(KeyFrame *keyframe)
 {
 	FileXML input;
@@ -515,10 +524,13 @@ void C41Effect::read_data(KeyFrame *keyframe)
 double C41Effect::difftime_nano(timespec start, timespec end)
 {
 	timespec temp;
-	if ((end.tv_nsec-start.tv_nsec)<0) {
+	if ((end.tv_nsec - start.tv_nsec) < 0)
+	{
 		temp.tv_sec = end.tv_sec-start.tv_sec-1;
 		temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
-	} else {
+	}
+	else
+	{
 		temp.tv_sec = end.tv_sec-start.tv_sec;
 		temp.tv_nsec = end.tv_nsec-start.tv_nsec;
 	}
@@ -536,34 +548,33 @@ float C41Effect::log2(float i)
 
 float C41Effect::myLog2(float i)
 {
-	float x, y, LogBodge=0.346607f;
-	x=*(int *)&i;
-	x*= 1.0/(1<<23); //1/pow(2,23);
-	x=x-127;
+	float x, y, LogBodge = 0.346607f;
+	x = *(int *)&i;
+	x *= 1.0 / (1 << 23); // 1/pow(2,23);
+	x = x - 127;
 
-	y=x-floorf(x);
-	y=(y-y*y)*LogBodge;
-	return x+y;
+	y = x - floorf(x);
+	y = (y - y * y) * LogBodge;
+	return x + y;
 }
 
 float C41Effect::myPow2(float i)
 {
-	float PowBodge=0.33971f;
+	float PowBodge = 0.33971f;
 	float x;
-	float y=i-floorf(i);
-	y=(y-y*y)*PowBodge;
+	float y = i - floorf(i);
+	y = (y - y * y) * PowBodge;
 
-	x=i+127-y;
-	x*= (1<<23);
-	*(int*)&x=(int)x;
+	x = i + 127 - y;
+	x* = (1 << 23);
+	*(int*) &x = (int)x;
 	return x;
 }
 
 float C41Effect::myPow(float a, float b)
 {
-	return myPow2(b*myLog2(a));
+	return myPow2(b * myLog2(a));
 }
-
 
 
 int C41Effect::process_buffer(VFrame *frame,
@@ -604,8 +615,8 @@ int C41Effect::process_buffer(VFrame *frame,
 	timespec start,middle,end;
 	clock_gettime(CLOCK_REALTIME, &start);
 
-	if(config.compute_magic){
-
+	if(config.compute_magic)
+	{
 		// Box blur!
 		VFrame* tmp_frame = new VFrame(*frame);
 		VFrame* blurry_frame = new VFrame(*frame);
@@ -619,18 +630,19 @@ int C41Effect::process_buffer(VFrame *frame,
 
 		int boxw = 5, boxh = 5;
 		// 3 passes of Box blur should be good
-		int pass,x,y,y_up,y_down,x_right,x_left;
+		int pass, x, y, y_up, y_down, x_right, x_left;
 		float component;
 		for(pass=0; pass<10; pass++)
 		{
 			for(y = 0; y < frame_h; y++)
-				for(x = 0; x < (3*frame_w); x++)
+				for(x = 0; x < (3 * frame_w); x++)
 					tmp_rows[y][x] = blurry_rows[y][x];
 			for(y = 0; y < frame_h; y++)
 			{
-				y_up = (y-boxh < 0)? 0 : y-boxh;
-				y_down = (y+boxh >= frame_h)? frame_h-1 : y+boxh;
-				for(x = 0; x < (3*frame_w); x++) {
+				y_up = (y - boxh < 0)? 0 : y - boxh;
+				y_down = (y + boxh >= frame_h)? frame_h - 1 : y + boxh;
+				for(x = 0; x < (3*frame_w); x++)
+				{
 					x_left = (x-(3*boxw) < 0)? 0 : x-(3*boxw);
 					x_right = (x+(3*boxw) >= (3*frame_w))? (3*frame_w)-1 : x+(3*boxw);
 					component=(tmp_rows[y_down][x_right]
@@ -657,17 +669,18 @@ int C41Effect::process_buffer(VFrame *frame,
 		{
 			SKIP_ROW;
 			float *row = (float*)blurry_frame->get_rows()[i];
-			for(int j = 0; j < frame_w; j++, row += 3) {
+			for(int j = 0; j < frame_w; j++, row += 3)
+			{
 				SKIP_COL;
 
-				if(row[0]<minima_r) minima_r = row[0];
-				if(row[0]>maxima_r) maxima_r = row[0];
+				if(row[0] < minima_r) minima_r = row[0];
+				if(row[0] > maxima_r) maxima_r = row[0];
 
-				if(row[1]<minima_g) minima_g = row[1];
-				if(row[1]>maxima_g) maxima_g = row[1];
+				if(row[1] < minima_g) minima_g = row[1];
+				if(row[1] > maxima_g) maxima_g = row[1];
 
-				if(row[2]<minima_b) minima_b = row[2];
-				if(row[2]>maxima_b) maxima_b = row[2];
+				if(row[2] < minima_b) minima_b = row[2];
+				if(row[2] > maxima_b) maxima_b = row[2];
 			}
 		}
 
@@ -681,14 +694,14 @@ int C41Effect::process_buffer(VFrame *frame,
 		magic1 = minima_r;
 		magic2 = minima_g;
 		magic3 = minima_b;
-		magic4 = (minima_r/maxima_r)*0.95;
-		magic5 = log(maxima_g/minima_g) / log(maxima_r/minima_r);
-		magic6 = log(maxima_b/minima_b) / log(maxima_r/minima_r);
+		magic4 = (minima_r / maxima_r) * 0.95;
+		magic5 = log(maxima_g / minima_g) / log(maxima_r / minima_r);
+		magic6 = log(maxima_b / minima_b) / log(maxima_r / minima_r);
 		// DEBUG
 		// printf("Magic values: %f %f %f\n", magic4, magic5, magic
 
 		// Update GUI
-		float *nf_vals = (float*) malloc(6*sizeof(float));
+		float *nf_vals = (float*) malloc(6 * <D-@>sizeof(float));
 		nf_vals[0] = magic1; nf_vals[1] = magic2; nf_vals[2] = magic3;
 		nf_vals[3] = magic4; nf_vals[4] = magic5; nf_vals[5] = magic6;
 		send_render_gui(nf_vals);
@@ -697,8 +710,8 @@ int C41Effect::process_buffer(VFrame *frame,
 	clock_gettime(CLOCK_REALTIME, &middle);
 
 	// Apply the transformation
-	if(config.active){
-
+	if(config.active)
+	{
 		// Get the values from the config instead of the computed ones
 		magic1 = config.fix_min_r;
 		magic2 = config.fix_min_g;
@@ -707,18 +720,20 @@ int C41Effect::process_buffer(VFrame *frame,
 		magic5 = config.fix_magic5;
 		magic6 = config.fix_magic6;
 
-		for(int i = 0; i < frame_h; i++){
+		for(int i = 0; i < frame_h; i++)
+		{
 			// DEBUG: will show the parts of the image skipped to compute the minima
 			// SKIP_ROW;
 			float *row = (float*)frame->get_rows()[i];
-			for(int j = 0; j < frame_w; j++, row += 3) {
+			for(int j = 0; j < frame_w; j++, row += 3)
+			{
 				// DEBUG
 				// SKIP_COL;
 				row[0] = (magic1 / row[0]) - magic4;
 
-				row[1] = myPow((magic2 / row[1]),1/magic5) - magic4;
+				row[1] = myPow((magic2 / row[1]), 1 / magic5) - magic4;
 
-				row[2] = myPow((magic3 / row[2]),1/magic6) - magic4;
+				row[2] = myPow((magic3 / row[2]), 1 / magic6) - magic4;
 			}
 		}
 	}
