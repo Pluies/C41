@@ -516,22 +516,6 @@ void C41Effect::read_data(KeyFrame *keyframe)
 	}
 }
 
-// Computes the difference (in nanoseconds) between two timespec
-double C41Effect::difftime_nano(timespec start, timespec end)
-{
-	timespec temp;
-	if ((end.tv_nsec - start.tv_nsec) < 0)
-	{
-		temp.tv_sec = end.tv_sec-start.tv_sec-1;
-		temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
-	}
-	else
-	{
-		temp.tv_sec = end.tv_sec-start.tv_sec;
-		temp.tv_nsec = end.tv_nsec-start.tv_nsec;
-	}
-	return 1e9*temp.tv_sec + temp.tv_nsec;
-}
 
 /* Faster pow() approximation; borrowed from http://www.dctsystems.co.uk/Software/power.html
  * Tests on real-world data showed a max error of 4% and avg. error or .1 to .5%,
