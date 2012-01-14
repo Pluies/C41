@@ -49,9 +49,20 @@ public:
 			long next_frame,
 			long current_frame);
 
-	int active, compute_magic;
-	float min_r, min_g, min_b, magic4, magic5, magic6;
-	float fix_min_r, fix_min_g, fix_min_b, fix_magic4, fix_magic5, fix_magic6;
+	int active;
+	int compute_magic;
+	float min_r;
+	float min_g;
+	float min_b;
+	float magic4;
+	float magic5;
+	float magic6;
+	float fix_min_r;
+	float fix_min_g;
+	float fix_min_b;
+	float fix_magic4;
+	float fix_magic5;
+	float fix_magic6;
 };
 
 class C41Enable : public BC_CheckBox
@@ -87,9 +98,20 @@ class C41Window : public BC_Window
 	C41Window(C41Effect *plugin, int x, int y);
 	void create_objects();
 	int close_event();
-	C41Enable *active, *compute_magic;
-	C41TextBox *min_r, *min_g, *min_b, *magic4, *magic5, *magic6;
-	C41TextBox *fix_min_r, *fix_min_g, *fix_min_b, *fix_magic4, *fix_magic5, *fix_magic6;
+	C41Enable *active;
+	C41Enable *compute_magic;
+	C41TextBox *min_r;
+	C41TextBox *min_g;
+	C41TextBox *min_b;
+	C41TextBox *magic4;
+	C41TextBox *magic5;
+	C41TextBox *magic6;
+	C41TextBox *fix_min_r;
+	C41TextBox *fix_min_g;
+	C41TextBox *fix_min_b;
+	C41TextBox *fix_magic4;
+	C41TextBox *fix_magic5;
+	C41TextBox *fix_magic6;
 	C41Button *lock;
 	C41Effect *plugin;
 };
@@ -247,7 +269,8 @@ C41Window::C41Window(C41Effect *plugin, int x, int y)
 
 void C41Window::create_objects()
 {
-	int x = 10, y = 10;
+	int x = 10;
+	int y = 10;
 
 	add_subwindow(active = new C41Enable(plugin, &plugin->config.active, x, y, _("Activate processing")));
 	y += 40;
@@ -521,7 +544,9 @@ void C41Effect::read_data(KeyFrame *keyframe)
  */
 float C41Effect::myLog2(float i)
 {
-	float x, y, LogBodge = 0.346607f;
+	float x;
+	float y;
+	float LogBodge = 0.346607f;
 	x = *(int *)&i;
 	x *= 1.0 / (1 << 23); // 1/pow(2,23);
 	x = x - 127;
@@ -582,7 +607,12 @@ int C41Effect::process_buffer(VFrame *frame,
 			break;
 	}
 
-	float magic1, magic2, magic3, magic4, magic5, magic6;
+	float magic1;
+	float magic2;
+	float magic3;
+	float magic4;
+	float magic5;
+	float magic6;
 
 	if(config.compute_magic)
 	{
@@ -599,7 +629,13 @@ int C41Effect::process_buffer(VFrame *frame,
 
 		int boxw = 5, boxh = 5;
 		// 3 passes of Box blur should be good
-		int pass, x, y, y_up, y_down, x_right, x_left;
+		int pass;
+		int x;
+		int y;
+		int y_up;
+		int y_down;
+		int x_right;
+		int x_left;
 		float component;
 		for(pass=0; pass<10; pass++)
 		{
@@ -625,8 +661,12 @@ int C41Effect::process_buffer(VFrame *frame,
 		}
 
 		// Compute magic negfix values
-		float minima_r = 50., minima_g = 50., minima_b = 50.;
-		float maxima_r = 0., maxima_g = 0., maxima_b = 0.;
+		float minima_r = 50.;
+		float minima_g = 50.;
+		float minima_b = 50.;
+		float maxima_r = 0.;
+		float maxima_g = 0.;
+		float maxima_b = 0.;
 
 		// Shave the image in order to avoid black borders
 		// Tolerance default: 5%, i.e. 0.05
