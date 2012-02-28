@@ -564,7 +564,7 @@ float C41Effect::myPow2(float i)
 	y = (y - y * y) * PowBodge;
 
 	x = i + 127 - y;
-	x* = (1 << 23);
+	x *= (1 << 23);
 	*(int*) &x = (int)x;
 	return x;
 }
