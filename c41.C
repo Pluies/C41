@@ -444,13 +444,6 @@ int C41Effect::load_defaults()
 	config.active = defaults->get("ACTIVE", config.active);
 	config.compute_magic = defaults->get("COMPUTE_MAGIC", config.compute_magic);
 
-	config.min_r = defaults->get("MIN_R", config.min_r);
-	config.min_g = defaults->get("MIN_G", config.min_g);
-	config.min_b = defaults->get("MIN_B", config.min_b);
-	config.magic4 = defaults->get("MAGIC4", config.magic4);
-	config.magic5 = defaults->get("MAGIC5", config.magic5);
-	config.magic6 = defaults->get("MAGIC6", config.magic6);
-
 	config.fix_min_r = defaults->get("FIX_MIN_R", config.fix_min_r);
 	config.fix_min_g = defaults->get("FIX_MIN_G", config.fix_min_g);
 	config.fix_min_b = defaults->get("FIX_MIN_B", config.fix_min_b);
@@ -465,12 +458,6 @@ int C41Effect::save_defaults()
 {
 	defaults->update("ACTIVE", config.active);
 	defaults->update("COMPUTE_MAGIC", config.compute_magic);
-	defaults->update("MIN_R", config.min_r);
-	defaults->update("MIN_G", config.min_g);
-	defaults->update("MIN_B", config.min_b);
-	defaults->update("MAGIC4", config.magic4);
-	defaults->update("MAGIC5", config.magic5);
-	defaults->update("MAGIC6", config.magic6);
 
 	defaults->update("FIX_MIN_R", config.fix_min_r);
 	defaults->update("FIX_MIN_G", config.fix_min_g);
@@ -489,13 +476,6 @@ void C41Effect::save_data(KeyFrame *keyframe)
 	output.tag.set_title("C41");
 	output.tag.set_property("ACTIVE", config.active);
 	output.tag.set_property("COMPUTE_MAGIC", config.compute_magic);
-
-	output.tag.set_property("MIN_R", config.min_r);
-	output.tag.set_property("MIN_G", config.min_g);
-	output.tag.set_property("MIN_B", config.min_b);
-	output.tag.set_property("MAGIC4", config.magic4);
-	output.tag.set_property("MAGIC5", config.magic5);
-	output.tag.set_property("MAGIC6", config.magic6);
 
 	output.tag.set_property("FIX_MIN_R", config.fix_min_r);
 	output.tag.set_property("FIX_MIN_G", config.fix_min_g);
@@ -521,12 +501,6 @@ void C41Effect::read_data(KeyFrame *keyframe)
 			config.active = input.tag.get_property("ACTIVE", config.active);
 			config.compute_magic = input.tag.get_property("COMPUTE_MAGIC", config.compute_magic);
 
-			config.min_r = input.tag.get_property("MIN_R", config.min_r);
-			config.min_g = input.tag.get_property("MIN_G", config.min_g);
-			config.min_b = input.tag.get_property("MIN_B", config.min_b);
-			config.magic4 = input.tag.get_property("MAGIC4", config.magic5);
-			config.magic5 = input.tag.get_property("MAGIC5", config.magic5);
-			config.magic6 = input.tag.get_property("MAGIC6", config.magic6);
 			config.fix_min_r = input.tag.get_property("FIX_MIN_R", config.fix_min_r);
 			config.fix_min_g = input.tag.get_property("FIX_MIN_G", config.fix_min_g);
 			config.fix_min_b = input.tag.get_property("FIX_MIN_B", config.fix_min_b);
