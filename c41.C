@@ -189,7 +189,12 @@ void C41Config::copy_from(C41Config &src)
 
 int C41Config::equivalent(C41Config &src)
 {
-	return false;
+	return (src.fix_min_r  == fix_min_r  &&
+		   src.fix_min_g  == fix_min_g  &&
+		   src.fix_min_b  == fix_min_b  &&
+		   src.fix_magic4 == fix_magic4 &&
+		   src.fix_magic5 == fix_magic5 &&
+		   src.fix_magic6 == fix_magic6);
 }
 
 void C41Config::interpolate(C41Config &prev,
@@ -355,32 +360,22 @@ void C41Window::create_objects()
 
 void C41Window::update()
 {
-	if(thread)
-	{
-		if(load_configuration())
-		{
-			thread->window->lock_window();
+	thread->window->active->update(config.active);
+	thread->window->compute_magic->update(config.compute_magic);
 
-			thread->window->active->update(config.active);
-			thread->window->compute_magic->update(config.compute_magic);
+	thread->window->min_r->update(min_r);
+	thread->window->min_g->update(min_g);
+	thread->window->min_b->update(min_b);
+	thread->window->magic4->update(magic4);
+	thread->window->magic5->update(magic5);
+	thread->window->magic6->update(magic6);
 
-			thread->window->min_r->update(min_r);
-			thread->window->min_g->update(min_g);
-			thread->window->min_b->update(min_b);
-			thread->window->magic4->update(magic4);
-			thread->window->magic5->update(magic5);
-			thread->window->magic6->update(magic6);
-
-			thread->window->fix_min_r->update(config.fix_min_r);
-			thread->window->fix_min_g->update(config.fix_min_g);
-			thread->window->fix_min_b->update(config.fix_min_b);
-			thread->window->fix_magic4->update(config.fix_magic4);
-			thread->window->fix_magic5->update(config.fix_magic5);
-			thread->window->fix_magic6->update(config.fix_magic6);
-
-			thread->window->unlock_window();
-		}
-	}	
+	thread->window->fix_min_r->update(config.fix_min_r);
+	thread->window->fix_min_g->update(config.fix_min_g);
+	thread->window->fix_min_b->update(config.fix_min_b);
+	thread->window->fix_magic4->update(config.fix_magic4);
+	thread->window->fix_magic5->update(config.fix_magic5);
+	thread->window->fix_magic6->update(config.fix_magic6);
 }
 
 WINDOW_CLOSE_EVENT(C41Window);
@@ -420,8 +415,12 @@ void C41Effect::lock_parameters()
 
 void C41Effect::update_gui()
 {
-	// We don't use update_gui, but rather render_gui.
-	// However, the method is still needed to instantiate the plugin
+	if(thread && load_configuration)
+	{
+		thread->window->lock_window("C41Effect::update_gui");
+		thread->window->update();
+		thread->window->unlock_window();
+	}
 }
 
 void C41Effect::render_gui(void* data)
