@@ -353,6 +353,36 @@ void C41Window::create_objects()
 	flush();
 }
 
+void C41Window::update()
+{
+	if(thread)
+	{
+		if(load_configuration())
+		{
+			thread->window->lock_window();
+
+			thread->window->active->update(config.active);
+			thread->window->compute_magic->update(config.compute_magic);
+
+			thread->window->min_r->update(min_r);
+			thread->window->min_g->update(min_g);
+			thread->window->min_b->update(min_b);
+			thread->window->magic4->update(magic4);
+			thread->window->magic5->update(magic5);
+			thread->window->magic6->update(magic6);
+
+			thread->window->fix_min_r->update(config.fix_min_r);
+			thread->window->fix_min_g->update(config.fix_min_g);
+			thread->window->fix_min_b->update(config.fix_min_b);
+			thread->window->fix_magic4->update(config.fix_magic4);
+			thread->window->fix_magic5->update(config.fix_magic5);
+			thread->window->fix_magic6->update(config.fix_magic6);
+
+			thread->window->unlock_window();
+		}
+	}	
+}
+
 WINDOW_CLOSE_EVENT(C41Window);
 PLUGIN_THREAD_OBJECT(C41Effect, C41Thread, C41Window);
 
@@ -395,35 +425,7 @@ void C41Effect::update_gui()
 }
 
 void C41Effect::render_gui(void* data)
-{
-	if(thread)
-	{
-		if(load_configuration())
-		{
-			thread->window->lock_window();
-
-			// Updating the GUI itself
-			thread->window->active->update(config.active);
-			thread->window->compute_magic->update(config.compute_magic);
-
-			thread->window->min_r->update(min_r);
-			thread->window->min_g->update(min_g);
-			thread->window->min_b->update(min_b);
-			thread->window->magic4->update(magic4);
-			thread->window->magic5->update(magic5);
-			thread->window->magic6->update(magic6);
-
-			thread->window->fix_min_r->update(config.fix_min_r);
-			thread->window->fix_min_g->update(config.fix_min_g);
-			thread->window->fix_min_b->update(config.fix_min_b);
-			thread->window->fix_magic4->update(config.fix_magic4);
-			thread->window->fix_magic5->update(config.fix_magic5);
-			thread->window->fix_magic6->update(config.fix_magic6);
-
-			thread->window->unlock_window();
-		}
-	}
-}
+{}
 
 int C41Effect::load_defaults()
 {
