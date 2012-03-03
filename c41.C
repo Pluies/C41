@@ -317,6 +317,7 @@ void C41Window::create_objects()
 	min_r->disable();
 	min_g->disable();
 	min_b->disable();
+	magic4->disable();
 	magic5->disable();
 	magic6->disable();
 
