@@ -699,8 +699,8 @@ int C41Effect::process_buffer(VFrame *frame,
 		magic2 = minima_g;
 		magic3 = minima_b;
 		magic4 = (minima_r / maxima_r) * 0.95;
-		magic5 = log(maxima_g / minima_g) / log(maxima_r / minima_r);
-		magic6 = log(maxima_b / minima_b) / log(maxima_r / minima_r);
+		magic5 = log(maxima_r / minima_r) / log(maxima_g / minima_g);
+		magic6 = log(maxima_r / minima_r) / log(maxima_b / minima_b);
 
 		// Update GUI
 		float *nf_vals = (float*) malloc(6 * sizeof(float));
@@ -727,9 +727,9 @@ int C41Effect::process_buffer(VFrame *frame,
 			{
 				row[0] = (magic1 / row[0]) - magic4;
 
-				row[1] = myPow((magic2 / row[1]), 1 / magic5) - magic4;
+				row[1] = myPow((magic2 / row[1]), magic5) - magic4;
 
-				row[2] = myPow((magic3 / row[2]), 1 / magic6) - magic4;
+				row[2] = myPow((magic3 / row[2]), magic6) - magic4;
 			}
 		}
 	}
