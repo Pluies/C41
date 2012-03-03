@@ -18,8 +18,51 @@
  * 
  */
 
-#include "c41window.h"
+#include "bcbase.h"
+#include "filexml.h"
 #include "language.h"
+#include "mutex.h"
+
+class C41Thread;
+class C41Toggle;
+class C41Window;
+
+class C41Toggle : public BC_CheckBox
+{
+public:
+	C41Toggle(C41Main *client, int *output, int x, int y);
+	~C41Toggle();
+	int handle_event();
+
+	C41Main *client;
+	int *output;
+};
+
+class C41Window : public BC_Window
+{
+public:
+	C41Window(C41Main *client);
+	~C41Window();
+	
+	int create_objects();
+	int close_event();
+	
+	C41Main *client;
+	C41Toggle *invert;
+};
+
+class C41Thread : public Thread
+{
+public:
+	C41Thread(C41Main *client);
+	~C41Thread();
+
+	void run();
+
+	Mutex gui_started; // prevent loading data until the GUI is started
+	C41Main *client;
+	C41Window *window;
+};
 
 
 C41Window::C41Window(C41Main *client)
@@ -47,11 +90,14 @@ C41Toggle::C41Toggle(C41Main *client, int *output, int x, int y)
 	this->client = client;
 	this->output = output;
 }
+
 C41Toggle::~C41Toggle()
 {
 }
+
 int C41Toggle::handle_event()
 {
 	*output = get_value();
 	client->send_configure_change();
 }
+
