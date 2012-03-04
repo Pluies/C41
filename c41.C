@@ -92,6 +92,7 @@ class C41Window : public BC_Window
 	C41Window(C41Effect *plugin, int x, int y);
 	void create_objects();
 	int close_event();
+	void update();
 	C41Enable *active;
 	C41Enable *compute_magic;
 	C41TextBox *min_r;
@@ -163,7 +164,6 @@ C41Config::C41Config()
 	active = 0;
 	compute_magic = 0;
 
-	min_r = min_g = min_b = magic4 = magic5 = magic6 = 0.;
 	fix_min_r = fix_min_g = fix_min_b = fix_magic4 = fix_magic5 = fix_magic6 = 0.;
 }
 
@@ -171,13 +171,6 @@ void C41Config::copy_from(C41Config &src)
 {
 	active = src.active;
 	compute_magic = src.compute_magic;
-
-	min_r = src.min_r;
-	min_g = src.min_g;
-	min_b = src.min_b;
-	magic4 = src.magic4;
-	magic5 = src.magic5;
-	magic6 = src.magic6;
 
 	fix_min_r = src.fix_min_r;
 	fix_min_g = src.fix_min_g;
@@ -205,13 +198,6 @@ void C41Config::interpolate(C41Config &prev,
 {
 	active = prev.active;
 	compute_magic = prev.compute_magic;
-
-	min_r = prev.min_r;
-	min_g = prev.min_g;
-	min_b = prev.min_b;
-	magic4 = prev.magic4;
-	magic5 = prev.magic5;
-	magic6 = prev.magic6;
 
 	fix_min_r = prev.fix_min_r;
 	fix_min_g = prev.fix_min_g;
@@ -290,27 +276,27 @@ void C41Window::create_objects()
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Min R:")));
-	add_subwindow(min_r = new C41TextBox(plugin, &plugin.min_r, x+60, y));
+	add_subwindow(min_r = new C41TextBox(plugin, &plugin->min_r, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Min G:")));
-	add_subwindow(min_g = new C41TextBox(plugin, &plugin.min_g, x+60, y));
+	add_subwindow(min_g = new C41TextBox(plugin, &plugin->min_g, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Min B:")));
-	add_subwindow(min_b = new C41TextBox(plugin, &plugin.min_b, x+60, y));
+	add_subwindow(min_b = new C41TextBox(plugin, &plugin->min_b, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Magic4:")));
-	add_subwindow(magic4 = new C41TextBox(plugin, &plugin.magic4, x+60, y));
+	add_subwindow(magic4 = new C41TextBox(plugin, &plugin->magic4, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Magic5:")));
-	add_subwindow(magic5 = new C41TextBox(plugin, &plugin.magic5, x+60, y));
+	add_subwindow(magic5 = new C41TextBox(plugin, &plugin->magic5, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Magic6:")));
-	add_subwindow(magic6 = new C41TextBox(plugin, &plugin.magic6, x+60, y));
+	add_subwindow(magic6 = new C41TextBox(plugin, &plugin->magic6, x+60, y));
 	y += 30;
 
 	// The user shouldn't be able to change the computed values
@@ -361,22 +347,22 @@ void C41Window::create_objects()
 
 void C41Window::update()
 {
-	thread->window->active->update(config.active);
-	thread->window->compute_magic->update(config.compute_magic);
+	plugin->thread->window->active->update(plugin->config.active);
+	plugin->thread->window->compute_magic->update(plugin->config.compute_magic);
 
-	thread->window->min_r->update(min_r);
-	thread->window->min_g->update(min_g);
-	thread->window->min_b->update(min_b);
-	thread->window->magic4->update(magic4);
-	thread->window->magic5->update(magic5);
-	thread->window->magic6->update(magic6);
+	plugin->thread->window->min_r->update(plugin->min_r);
+	plugin->thread->window->min_g->update(plugin->min_g);
+	plugin->thread->window->min_b->update(plugin->min_b);
+	plugin->thread->window->magic4->update(plugin->magic4);
+	plugin->thread->window->magic5->update(plugin->magic5);
+	plugin->thread->window->magic6->update(plugin->magic6);
 
-	thread->window->fix_min_r->update(config.fix_min_r);
-	thread->window->fix_min_g->update(config.fix_min_g);
-	thread->window->fix_min_b->update(config.fix_min_b);
-	thread->window->fix_magic4->update(config.fix_magic4);
-	thread->window->fix_magic5->update(config.fix_magic5);
-	thread->window->fix_magic6->update(config.fix_magic6);
+	plugin->thread->window->fix_min_r->update(plugin->config.fix_min_r);
+	plugin->thread->window->fix_min_g->update(plugin->config.fix_min_g);
+	plugin->thread->window->fix_min_b->update(plugin->config.fix_min_b);
+	plugin->thread->window->fix_magic4->update(plugin->config.fix_magic4);
+	plugin->thread->window->fix_magic5->update(plugin->config.fix_magic5);
+	plugin->thread->window->fix_magic6->update(plugin->config.fix_magic6);
 }
 
 WINDOW_CLOSE_EVENT(C41Window);
@@ -386,6 +372,7 @@ PLUGIN_THREAD_OBJECT(C41Effect, C41Thread, C41Window);
 C41Effect::C41Effect(PluginServer *server)
  : PluginVClient(server)
 {
+	min_r = min_g = min_b = magic4 = magic5 = magic6 = 0.;
 	PLUGIN_CONSTRUCTOR_MACRO
 }
 
@@ -416,7 +403,7 @@ void C41Effect::lock_parameters()
 
 void C41Effect::update_gui()
 {
-	if(thread && load_configuration)
+	if(thread && load_configuration())
 	{
 		thread->window->lock_window("C41Effect::update_gui");
 		thread->window->update();
