@@ -299,36 +299,28 @@ void C41Window::create_objects()
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Min R:")));
-	add_subwindow(min_r = new C41TextBox(plugin, &plugin->min_r, x+60, y));
+	add_subwindow(min_r = new BC_Title(x+60, y, _(" ")));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Min G:")));
-	add_subwindow(min_g = new C41TextBox(plugin, &plugin->min_g, x+60, y));
+	add_subwindow(min_g = new BC_Title(x+60, y, _(" ")));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Min B:")));
-	add_subwindow(min_b = new C41TextBox(plugin, &plugin->min_b, x+60, y));
+	add_subwindow(min_b = new BC_Title(x+60, y, _(" ")));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Magic4:")));
-	add_subwindow(magic4 = new C41TextBox(plugin, &plugin->magic4, x+60, y));
+	add_subwindow(magic4 = new BC_Title(x+60, y, _(" ")));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Magic5:")));
-	add_subwindow(magic5 = new C41TextBox(plugin, &plugin->magic5, x+60, y));
+	add_subwindow(magic5 = new BC_Title(x+60, y, _(" ")));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Magic6:")));
-	add_subwindow(magic6 = new C41TextBox(plugin, &plugin->magic6, x+60, y));
+	add_subwindow(magic6 = new BC_Title(x+60, y, _(" ")));
 	y += 30;
-
-	// The user shouldn't be able to change the computed values
-	min_r->disable();
-	min_g->disable();
-	min_b->disable();
-	magic4->disable();
-	magic5->disable();
-	magic6->disable();
 
 
 	y += 30;
