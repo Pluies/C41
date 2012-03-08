@@ -139,6 +139,28 @@ class C41Window : public BC_Window
 
 PLUGIN_THREAD_HEADER(C41Effect, C41Thread, C41Window);
 
+class C41Main : public PluginVClient
+{
+public:
+	C41Main(int argc, char *argv[]);
+	~C41Main();
+
+	// required for all realtime plugins
+	int process_realtime(long size, VFrame **input_ptr, VFrame **output_ptr);
+	int plugin_is_realtime();
+	int plugin_is_multi_channel();
+	char* plugin_title();
+	int start_realtime();
+	int stop_realtime();
+	int start_gui();
+	int stop_gui();
+	int show_gui();
+	int hide_gui();
+	int set_string();
+	int save_data(char *text);
+	int read_data(char *text);
+	C41Thread *thread;
+};
 
 class C41Effect : public PluginVClient
 {
@@ -178,6 +200,7 @@ public:
 	C41Thread *thread;
 	BC_Hash *defaults;
 };
+
 
 REGISTER_PLUGIN(C41Effect);
 
