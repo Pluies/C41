@@ -77,12 +77,6 @@ public:
 
 	int active;
 	int compute_magic;
-	float min_r;
-	float min_g;
-	float min_b;
-	float magic4;
-	float magic5;
-	float magic6;
 	float fix_min_r;
 	float fix_min_g;
 	float fix_min_b;
@@ -124,6 +118,7 @@ class C41Window : public BC_Window
 	C41Window(C41Effect *plugin, int x, int y);
 	void create_objects();
 	int close_event();
+	void update();
 	C41Enable *active;
 	C41Enable *compute_magic;
 	C41TextBox *min_r;
@@ -172,6 +167,13 @@ public:
 	float myPow(float a, float b);
 	double difftime_nano(timespec start, timespec end);
 
+	float min_r;
+	float min_g;
+	float min_b;
+	float magic4;
+	float magic5;
+	float magic6;
+
 	C41Config config;
 	C41Thread *thread;
 	BC_Hash *defaults;
@@ -188,7 +190,6 @@ C41Config::C41Config()
 	active = 0;
 	compute_magic = 0;
 
-	min_r = min_g = min_b = magic4 = magic5 = magic6 = 0.;
 	fix_min_r = fix_min_g = fix_min_b = fix_magic4 = fix_magic5 = fix_magic6 = 0.;
 }
 
@@ -196,13 +197,6 @@ void C41Config::copy_from(C41Config &src)
 {
 	active = src.active;
 	compute_magic = src.compute_magic;
-
-	min_r = src.min_r;
-	min_g = src.min_g;
-	min_b = src.min_b;
-	magic4 = src.magic4;
-	magic5 = src.magic5;
-	magic6 = src.magic6;
 
 	fix_min_r = src.fix_min_r;
 	fix_min_g = src.fix_min_g;
@@ -214,7 +208,12 @@ void C41Config::copy_from(C41Config &src)
 
 int C41Config::equivalent(C41Config &src)
 {
-	return false;
+	return (src.fix_min_r  == fix_min_r  &&
+		   src.fix_min_g  == fix_min_g  &&
+		   src.fix_min_b  == fix_min_b  &&
+		   src.fix_magic4 == fix_magic4 &&
+		   src.fix_magic5 == fix_magic5 &&
+		   src.fix_magic6 == fix_magic6);
 }
 
 void C41Config::interpolate(C41Config &prev,
@@ -225,13 +224,6 @@ void C41Config::interpolate(C41Config &prev,
 {
 	active = prev.active;
 	compute_magic = prev.compute_magic;
-
-	min_r = prev.min_r;
-	min_g = prev.min_g;
-	min_b = prev.min_b;
-	magic4 = prev.magic4;
-	magic5 = prev.magic5;
-	magic6 = prev.magic6;
 
 	fix_min_r = prev.fix_min_r;
 	fix_min_g = prev.fix_min_g;
@@ -310,33 +302,34 @@ void C41Window::create_objects()
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Min R:")));
-	add_subwindow(min_r = new C41TextBox(plugin, &plugin->config.min_r, x+60, y));
+	add_subwindow(min_r = new C41TextBox(plugin, &plugin->min_r, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Min G:")));
-	add_subwindow(min_g = new C41TextBox(plugin, &plugin->config.min_g, x+60, y));
+	add_subwindow(min_g = new C41TextBox(plugin, &plugin->min_g, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Min B:")));
-	add_subwindow(min_b = new C41TextBox(plugin, &plugin->config.min_b, x+60, y));
+	add_subwindow(min_b = new C41TextBox(plugin, &plugin->min_b, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Magic4:")));
-	add_subwindow(magic4 = new C41TextBox(plugin, &plugin->config.magic4, x+60, y));
+	add_subwindow(magic4 = new C41TextBox(plugin, &plugin->magic4, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Magic5:")));
-	add_subwindow(magic5 = new C41TextBox(plugin, &plugin->config.magic5, x+60, y));
+	add_subwindow(magic5 = new C41TextBox(plugin, &plugin->magic5, x+60, y));
 	y += 30;
 
 	add_subwindow(new BC_Title(x, y, _("Magic6:")));
-	add_subwindow(magic6 = new C41TextBox(plugin, &plugin->config.magic6, x+60, y));
+	add_subwindow(magic6 = new C41TextBox(plugin, &plugin->magic6, x+60, y));
 	y += 30;
 
 	// The user shouldn't be able to change the computed values
 	min_r->disable();
 	min_g->disable();
 	min_b->disable();
+	magic4->disable();
 	magic5->disable();
 	magic6->disable();
 
@@ -378,6 +371,26 @@ void C41Window::create_objects()
 	flush();
 }
 
+void C41Window::update()
+{
+	plugin->thread->window->active->update(plugin->config.active);
+	plugin->thread->window->compute_magic->update(plugin->config.compute_magic);
+
+	plugin->thread->window->min_r->update(plugin->min_r);
+	plugin->thread->window->min_g->update(plugin->min_g);
+	plugin->thread->window->min_b->update(plugin->min_b);
+	plugin->thread->window->magic4->update(plugin->magic4);
+	plugin->thread->window->magic5->update(plugin->magic5);
+	plugin->thread->window->magic6->update(plugin->magic6);
+
+	plugin->thread->window->fix_min_r->update(plugin->config.fix_min_r);
+	plugin->thread->window->fix_min_g->update(plugin->config.fix_min_g);
+	plugin->thread->window->fix_min_b->update(plugin->config.fix_min_b);
+	plugin->thread->window->fix_magic4->update(plugin->config.fix_magic4);
+	plugin->thread->window->fix_magic5->update(plugin->config.fix_magic5);
+	plugin->thread->window->fix_magic6->update(plugin->config.fix_magic6);
+}
+
 WINDOW_CLOSE_EVENT(C41Window);
 PLUGIN_THREAD_OBJECT(C41Effect, C41Thread, C41Window);
 
@@ -385,6 +398,7 @@ PLUGIN_THREAD_OBJECT(C41Effect, C41Thread, C41Window);
 C41Effect::C41Effect(PluginServer *server)
  : PluginVClient(server)
 {
+	min_r = min_g = min_b = magic4 = magic5 = magic6 = 0.;
 	PLUGIN_CONSTRUCTOR_MACRO
 }
 
@@ -405,61 +419,26 @@ LOAD_CONFIGURATION_MACRO(C41Effect, C41Config)
 
 void C41Effect::lock_parameters()
 {
-	config.fix_min_r = config.min_r;
-	config.fix_min_g = config.min_g;
-	config.fix_min_b = config.min_b;
-	config.fix_magic4 = config.magic4;
-	config.fix_magic5 = config.magic5;
-	config.fix_magic6 = config.magic6;
+	config.fix_min_r = min_r;
+	config.fix_min_g = min_g;
+	config.fix_min_b = min_b;
+	config.fix_magic4 = magic4;
+	config.fix_magic5 = magic5;
+	config.fix_magic6 = magic6;
 }
 
 void C41Effect::update_gui()
 {
-	// We don't use update_gui, but rather render_gui.
-	// However, the method is still needed to instantiate the plugin
+	if(thread && load_configuration())
+	{
+		thread->window->lock_window("C41Effect::update_gui");
+		thread->window->update();
+		thread->window->unlock_window();
+	}
 }
 
 void C41Effect::render_gui(void* data)
-{
-	if(thread)
-	{
-		if(load_configuration())
-		{
-			thread->window->lock_window();
-
-			// Updating values computed by process_buffer
-			float* nf_vals = (float*) data;
-			config.min_r = nf_vals[0];
-			config.min_g = nf_vals[1];
-			config.min_b = nf_vals[2];
-			config.magic4 = nf_vals[3];
-			config.magic5 = nf_vals[4];
-			config.magic6 = nf_vals[5];
-
-			// Updating the GUI itself
-			thread->window->active->update(config.active);
-			thread->window->compute_magic->update(config.compute_magic);
-
-			thread->window->min_r->update(config.min_r);
-			thread->window->min_g->update(config.min_g);
-			thread->window->min_b->update(config.min_b);
-			thread->window->magic4->update(config.magic4);
-			thread->window->magic5->update(config.magic5);
-			thread->window->magic6->update(config.magic6);
-
-			thread->window->fix_min_r->update(config.fix_min_r);
-			thread->window->fix_min_g->update(config.fix_min_g);
-			thread->window->fix_min_b->update(config.fix_min_b);
-			thread->window->fix_magic4->update(config.fix_magic4);
-			thread->window->fix_magic5->update(config.fix_magic5);
-			thread->window->fix_magic6->update(config.fix_magic6);
-
-			free(data);
-
-			thread->window->unlock_window();
-		}
-	}
-}
+{}
 
 int C41Effect::load_defaults()
 {
@@ -469,13 +448,6 @@ int C41Effect::load_defaults()
 	defaults->load();
 	config.active = defaults->get("ACTIVE", config.active);
 	config.compute_magic = defaults->get("COMPUTE_MAGIC", config.compute_magic);
-
-	config.min_r = defaults->get("MIN_R", config.min_r);
-	config.min_g = defaults->get("MIN_G", config.min_g);
-	config.min_b = defaults->get("MIN_B", config.min_b);
-	config.magic4 = defaults->get("MAGIC4", config.magic4);
-	config.magic5 = defaults->get("MAGIC5", config.magic5);
-	config.magic6 = defaults->get("MAGIC6", config.magic6);
 
 	config.fix_min_r = defaults->get("FIX_MIN_R", config.fix_min_r);
 	config.fix_min_g = defaults->get("FIX_MIN_G", config.fix_min_g);
@@ -491,12 +463,6 @@ int C41Effect::save_defaults()
 {
 	defaults->update("ACTIVE", config.active);
 	defaults->update("COMPUTE_MAGIC", config.compute_magic);
-	defaults->update("MIN_R", config.min_r);
-	defaults->update("MIN_G", config.min_g);
-	defaults->update("MIN_B", config.min_b);
-	defaults->update("MAGIC4", config.magic4);
-	defaults->update("MAGIC5", config.magic5);
-	defaults->update("MAGIC6", config.magic6);
 
 	defaults->update("FIX_MIN_R", config.fix_min_r);
 	defaults->update("FIX_MIN_G", config.fix_min_g);
@@ -515,13 +481,6 @@ void C41Effect::save_data(KeyFrame *keyframe)
 	output.tag.set_title("C41");
 	output.tag.set_property("ACTIVE", config.active);
 	output.tag.set_property("COMPUTE_MAGIC", config.compute_magic);
-
-	output.tag.set_property("MIN_R", config.min_r);
-	output.tag.set_property("MIN_G", config.min_g);
-	output.tag.set_property("MIN_B", config.min_b);
-	output.tag.set_property("MAGIC4", config.magic4);
-	output.tag.set_property("MAGIC5", config.magic5);
-	output.tag.set_property("MAGIC6", config.magic6);
 
 	output.tag.set_property("FIX_MIN_R", config.fix_min_r);
 	output.tag.set_property("FIX_MIN_G", config.fix_min_g);
@@ -547,12 +506,6 @@ void C41Effect::read_data(KeyFrame *keyframe)
 			config.active = input.tag.get_property("ACTIVE", config.active);
 			config.compute_magic = input.tag.get_property("COMPUTE_MAGIC", config.compute_magic);
 
-			config.min_r = input.tag.get_property("MIN_R", config.min_r);
-			config.min_g = input.tag.get_property("MIN_G", config.min_g);
-			config.min_b = input.tag.get_property("MIN_B", config.min_b);
-			config.magic4 = input.tag.get_property("MAGIC4", config.magic5);
-			config.magic5 = input.tag.get_property("MAGIC5", config.magic5);
-			config.magic6 = input.tag.get_property("MAGIC6", config.magic6);
 			config.fix_min_r = input.tag.get_property("FIX_MIN_R", config.fix_min_r);
 			config.fix_min_g = input.tag.get_property("FIX_MIN_G", config.fix_min_g);
 			config.fix_min_b = input.tag.get_property("FIX_MIN_B", config.fix_min_b);
@@ -653,7 +606,7 @@ int C41Effect::process_buffer(VFrame *frame,
 				blurry_rows[i][j] = rows[i][j];
 
 		int boxw = 5, boxh = 5;
-		// 3 passes of Box blur should be good
+		// 10 passes of Box blur should be good
 		int pass;
 		int x;
 		int y;
@@ -725,37 +678,27 @@ int C41Effect::process_buffer(VFrame *frame,
 		magic2 = minima_g;
 		magic3 = minima_b;
 		magic4 = (minima_r / maxima_r) * 0.95;
-		magic5 = log(maxima_g / minima_g) / log(maxima_r / minima_r);
-		magic6 = log(maxima_b / minima_b) / log(maxima_r / minima_r);
+		magic5 = log(maxima_r / minima_r) / log(maxima_g / minima_g);
+		magic6 = log(maxima_r / minima_r) / log(maxima_b / minima_b);
 
 		// Update GUI
-		float *nf_vals = (float*) malloc(6 * sizeof(float));
-		nf_vals[0] = magic1; nf_vals[1] = magic2; nf_vals[2] = magic3;
-		nf_vals[3] = magic4; nf_vals[4] = magic5; nf_vals[5] = magic6;
-		send_render_gui(nf_vals);
+		send_render_gui(NULL);
 	}
 
 	// Apply the transformation
 	if(config.active)
 	{
 		// Get the values from the config instead of the computed ones
-		magic1 = config.fix_min_r;
-		magic2 = config.fix_min_g;
-		magic3 = config.fix_min_b;
-		magic4 = config.fix_magic4;
-		magic5 = config.fix_magic5;
-		magic6 = config.fix_magic6;
-
 		for(int i = 0; i < frame_h; i++)
 		{
 			float *row = (float*)frame->get_rows()[i];
 			for(int j = 0; j < frame_w; j++, row += 3)
 			{
-				row[0] = (magic1 / row[0]) - magic4;
+				row[0] = (config.fix_min_r / row[0]) - config.fix_magic4;
 
-				row[1] = myPow((magic2 / row[1]), 1 / magic5) - magic4;
+				row[1] = myPow((config.fix_min_g / row[1]), config.fix_magic5) - config.fix_magic4;
 
-				row[2] = myPow((magic3 / row[2]), 1 / magic6) - magic4;
+				row[2] = myPow((config.fix_min_b / row[2]), config.fix_magic6) - config.fix_magic4;
 			}
 		}
 	}
