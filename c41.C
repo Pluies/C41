@@ -95,12 +95,12 @@ class C41Window : public BC_Window
 	void update();
 	C41Enable *active;
 	C41Enable *compute_magic;
-	C41TextBox *min_r;
-	C41TextBox *min_g;
-	C41TextBox *min_b;
-	C41TextBox *magic4;
-	C41TextBox *magic5;
-	C41TextBox *magic6;
+	BC_Title *min_r;
+	BC_Title *min_g;
+	BC_Title *min_b;
+	BC_Title *magic4;
+	BC_Title *magic5;
+	BC_Title *magic6;
 	C41TextBox *fix_min_r;
 	C41TextBox *fix_min_g;
 	C41TextBox *fix_min_b;
